@@ -1,0 +1,48 @@
+﻿@model IEnumerable<WebApiSampleApp.ViewModel.ContactModel>
+
+@{
+    ViewBag.Title = "Contact List";
+    var grid = new WebGrid(source: Model, canPage: true, canSort: true, rowsPerPage: 10);
+}
+
+<h3>Contact List</h3>
+@using (Html.BeginForm("GetContactlist", "home", FormMethod.Get))
+{
+
+    <div style="overflow:auto">
+
+        <div class="col-md-6" style="margin-bottom:30px; margin-top:10px; margin-left:40px;">
+            <div class="input-group">
+                <input type="text" name="filter" value="@ViewBag.filter" class="form-control" placeholder="Search by First Name/Last Name" />
+                <span class="input-group-btn" style="margin-right:120px;">
+                    <button class="btn btn-success pull-left" type="submit" style="margin-right:89px" >
+                        Search
+                    </button>
+                </span>
+
+                <span class="input-group-btn">
+                    <button class="btn btn-success" type="submit" style="margin-right:20px ">
+                        Show All
+                    </button>
+                </span>
+
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+
+        @grid.GetHtml(
+         tableStyle: "table table-responsive",
+         columns: grid.Columns
+             (
+                 grid.Column("FirstName", "First Name"),
+                 grid.Column("LastName", "Last Name"),
+                 grid.Column("ContactNo1", "Mobile Phone No"),
+                 grid.Column("ContactNo2", "Work Phone No "),
+                 grid.Column("EmailID", "Email ID"),
+                 grid.Column(header: "Image", format:@<text>@Html.Raw((item.ImagePath == null ? "" : "<img width='100' alt='' src='/image/" + item.ImagePath + "'"))</text>),
+                                                  grid.Column(header: "View", format: (item) => Html.ActionLink("View", "View", "Home", new { id = item.ContactID }, null)),
+                                                  //grid.Column(header: "Edit", format: (item) => Html.ActionLink("Edit", "Edit", "Home", new { id = item.ContactID }, null)),
+                                                  grid.Column(header: "Delete", format: (item) => Html.ActionLink("Delete", "Delete", "Home", new { id = item.ContactID }, null))
+                                              )
+                                          )
+    </div>
+}
